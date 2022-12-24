@@ -22,15 +22,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-# if DEBUG:
-#     with open("secret_key.txt") as file:
-#         key = file.read().strip()
-#         SECRET_KEY = key
-# else:
-#     # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+if DEBUG:
+    with open("secret_key.txt") as file:
+        key = file.read().strip()
+        SECRET_KEY = key
+else:
+    # SECURITY WARNING: keep the secret key used in production secret!
+    SECRET_KEY = os.environ.get("SECRET_KEY")
 
 ALLOWED_HOSTS = ["*"]
 
@@ -43,13 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'whitenoise.runserver_nostatic', 
     'core','server',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -137,7 +135,3 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
-
-
-if not DEBUG:
-    CSRF_TRUSTED_ORIGINS = ['web-production-2d59.up.railway.app']
