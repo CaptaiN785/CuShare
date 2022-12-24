@@ -138,4 +138,4 @@ STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 
 
 if not DEBUG:
-    CSRF_TRUSTED_ORIGINS = ['https://web-production-2d59.up.railway.app']
+    CSRF_TRUSTED_ORIGINS = ['web-production-2d59.up.railway.app']
