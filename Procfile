@@ -1,0 +1,1 @@
+web: gunicorn cushare.wsgi --log-file -
