@@ -4,13 +4,13 @@
         {
             "src": "cushare/wsgi.py",
             "use": "@vercel/python",
-            "config": { "maxLambdaSize":"50mb", "runtime": "python3.10" }
+            "config": { "maxLambdaSize":"50mb", "runtime": "python3.7" }
         },
         {
             "src": "build.sh",
             "use": "@vercel/static-build",
             "config": {
-                "distDir": "staticfile_build"
+                "distDir": "staticfiles"
             }
         }
     ],
