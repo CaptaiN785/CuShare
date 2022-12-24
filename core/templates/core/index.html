@@ -1,0 +1,23 @@
+{% extends 'core/base.html' %}
+
+{% block title %}CuShare{% endblock title %}
+
+{% block navbar %}
+<li class="nav-item"><a href="{% url 'home' %}">Home</a></li>
+<li class="nav-item"><a href="{% url 'server' %}">Server</a></li>
+{% endblock navbar %}
+
+{% block content %}
+
+<section id = "home">
+    <div>
+        <h3 class="lead">Code sharing becomes easy</h3>
+    </div>
+    {% comment %} <div>
+        <p>ksjh kjshkfjh skdsk kls  skjdf</p>
+    </div> {% endcomment %}
+    <div>
+        <a class="link-btn" href="{% url 'server' %}" class>Get Started</a>
+    </div>
+</section>
+{% endblock content %}

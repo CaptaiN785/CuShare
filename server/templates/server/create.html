@@ -1,0 +1,69 @@
+{% extends 'server/base.html' %}
+
+{% block title %}Create server{% endblock title %}
+
+
+{% block content %}
+
+<section id = "server-create">
+<div class="container">
+
+    <div class="form">
+        <h2>Register your server</h2><hr>
+        <form x action="" autocomplete="off" method="post">
+            {% csrf_token %}
+            <div class="input-wrapper">
+                <div class="input-row">
+                    <p class="input-label">Enter Server ID</p>
+                    <p>{{form.server_id}}</p>
+                </div>
+                {% if server_id_error %}
+                <div class="error"><p>* Invalid session id(use only: a-zA-Z0-9)</p></div>
+                {% endif %}
+                <div class="input-row">
+                    <p class="input-label">Enter secret key</p>
+                    <p>{{form.secret_key}}</p>
+                </div>
+                <div class="input-row">
+                    <p class="input-label">Confirm secret key</p>
+                    <p>{{form.secret_key_cnf}}</p>
+                </div>
+                {% if password_error %}
+                    <div class="error"><p>* Password didn't match</p></div>
+                {% endif %}
+                <div class="input-row">
+                    <p><button type="submit">Register</button></p>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="form">
+        <h2>Login to server</h2><hr>
+        <form action="{% url 'server-login' %}" method="post" autocomplete="off">
+            {% csrf_token %}
+            <div class="input-row">
+                <p class="input-label">Enter Server ID</p>
+                <p><input type="text" name="server_id" id="server_id" maxlength="10"></p>
+            </div>
+            <div class="input-row">
+                <p class="input-label">Enter secret key</p>
+                <p><input type="Password" name="secret_key" id="secret_key"></p>
+            </div>
+            {% if messages %}
+                {% for message in messages %}
+                <p class="error">* {{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            <div class="input-row">
+                <p><button type="submit">Login</button></p>
+            </div>
+        </form>
+    </div>
+</div>
+    
+
+</section>
+
+{% endblock content %}
+

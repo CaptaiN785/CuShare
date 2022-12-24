@@ -1,0 +1,67 @@
+{% extends 'server/base.html' %}
+{% load static %}
+{% block title %}Upload{% endblock title %}
+
+{% block content %}
+<section id="upload">
+    <div class="form-wrapper">
+        {% if isError %}
+            <h2 class="upload-error">{{message}} </h2>
+        {% endif %}
+        <div class="form">
+            <h2>Upload your code here</h2><hr>
+            <form action="{% url 'server-upload' %}"  method="post" enctype="multipart/form-data">
+                
+                {% csrf_token %}
+                <div class="input-row">
+                    <p class="input-label">Enter title</p>
+                    <p><input type="text" name="title" id="title" minlength="4" maxlength="60"></p>
+                </div>
+                <div class="input-row">
+                    <p class="input-label">Select upload type</p>
+                    <p>
+                        <input type="radio" name="upload_type" id="file_upload" value="file" checked >
+                        <label for="file_upload">Upload file</label>
+                        <input type="radio" name="upload_type" id="code_upload" value="code">
+                        <label for="code_upload">Upload code</label>
+                    </p>
+                </div>
+                <div class="input-row" id="file_section">
+                    <p class="input-label"><label for="uploaded_file">Select file</label></p>
+                    <p><input type="file" name="code_file" id="uploaded_file"></p>
+                </div>
+                <div class="input-row" id="code_section" style="display:none;">
+                    <!-- make this display as none-->
+                    <p class="input-label">Paste your code</p>
+                    <p><textarea name="code" id="uploaded_code"
+                        placeholder="paste your code here"></textarea></p>
+                </div>
+                <div class="input-row">
+                    <p><button type="submit">Upload</button></p>
+                </div>
+            </form>
+        </div>            
+    </div>
+    
+</section>
+{% endblock content %}
+
+{% block js %}
+<script>
+
+    var fileUpload = document.getElementById("file_upload");
+    var codeUpload = document.getElementById("code_upload");
+
+    var fileSection = document.getElementById("file_section");
+    var codeSection = document.getElementById("code_section");
+
+    fileUpload.addEventListener("click", function(){
+        fileSection.style.display = "block";
+        codeSection.style.display = "none";    
+    });
+    codeUpload.addEventListener("click", function(){
+        fileSection.style.display = "none";
+        codeSection.style.display = "block";  
+    });
+</script>
+{% endblock js %}

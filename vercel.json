@@ -1,0 +1,27 @@
+{
+    "version": 1,
+    "builds": [
+        {
+            "src": "cushare/wsgi.py",
+            "use": "@vercel/python",
+            "config": { "maxLambdaSize":"50mb", "runtime": "python3.10" }
+        },
+        {
+            "src": "build.sh",
+            "use": "@vercel/static-build",
+            "config": {
+                "distDir": "staticfile_build"
+            }
+        }
+    ],
+    "routes": [
+        {
+            "src": "/static/(.*)",
+            "dest": "/static/$1"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "cushare/wsgi.py"
+        }
+    ]
+}

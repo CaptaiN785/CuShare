@@ -1,0 +1,20 @@
+{% extends 'server/base.html' %}
+
+{% block title %}Server{% endblock title %}
+
+
+{% block content %}
+
+<section id="server-code">
+    <div class="code-container">
+        {% for code  in codes  %}
+            <div class="header">
+                <h1> {{code.title}} </h1>
+                <button class="modal-btn" onclick="copyCode()" >Copy</button>
+            </div>
+            <pre><div class="modal-body" >{{code.code}}</div></pre>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock content %}

@@ -1,0 +1,63 @@
+{% extends 'server/base.html' %}
+{% load static %}
+{% block title %}Manage server{% endblock title %}
+
+{% block content %}
+<section id="manage-home">
+
+<div class="manage-container">
+
+    <div class="upload-bar">
+        <a href="{% url 'delete-server' %}" class="upload-btn" onclick="return ask()"
+        title="Deleting server cause lost of all uploaded codes."
+        >Delete Server</a>
+        <a href="{% url 'server-upload' %}" class="upload-btn">+  Upload</a>
+    </div>
+    <hr>
+    <div class="data-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Code ID</th>
+                    <th>Option</th>
+                    <th>View</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cd in data reversed %}
+                    <tr>
+                        <td> {{ cd.title }} </td>
+                        <td> {{ cd.code_id }} </td>
+                        <td>
+                            <a href="{% url 'server-delete' cd.id %}" class="delete-link"
+                            onclick="return ask()">Delete</a>
+                        </td>
+                        <td>
+                            <button class="view-btn" onclick="showCode(this)" 
+                            value='{{cd.code}}' id="{{cd.title}}">View</button>
+                        </td>
+                    </tr>
+                {% empty%}
+                <tr><td colspan='4'>No upload found</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal">
+        <div class="modal-header">
+            <span>
+                <p id="modal-title">Heading</p>
+                <button class="modal-btn" onclick="copyCode()">Copy</button>
+            </span>
+            <button class="modal-btn" onclick="closeModel()">X</button>
+        </div>
+        <div class="modal-body">
+            
+        </div>
+    </div>
+
+</div>
+</section>
+{% endblock content %}

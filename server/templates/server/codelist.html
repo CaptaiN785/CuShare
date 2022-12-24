@@ -1,0 +1,55 @@
+{% extends 'server/base.html' %}
+{% load static %}
+
+{% block title %}Code list{% endblock title %}
+
+
+{% block content %}
+<section id="codelist-home">
+ <div class="manage-container">
+       
+<div class="data-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Code ID</th>
+                <th>View</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cd in data reversed %}
+                <tr>
+                    <td> {{ cd.title }} </td>
+                    <td> {{ cd.code_id }} </td>
+                    <td>
+                        <button class="view-btn" onclick="showCode(this)" 
+                        value='{{cd.code}}' id="{{cd.title}}">View</button>
+                    </td>
+                </tr>
+            {% empty%}
+            <tr><td colspan='4'>No upload found</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+ </div>
+<div class="modal">
+    <div class="modal-header">
+        <span>
+            <p id="modal-title">Heading</p>
+            <button class="modal-btn" onclick="copyCode()">Copy</button>
+        </span>
+        <button class="modal-btn" onclick="closeModel()">X</button>
+    </div>
+    <div class="modal-body">
+        
+    </div>
+</div>
+</section>
+{% endblock content %}
+
+{% block js %}
+    <script src="{% static 'server/js/app.js' %}"></script>
+{% endblock js %}
