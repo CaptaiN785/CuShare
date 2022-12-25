@@ -94,6 +94,21 @@ def upload(request):
 
     return render(request, 'server/upload.html', context)
 
+def change_password(request):
+    if request.session.get(serverID, False):
+        server_id = request.session.get(serverID)
+        if request.method == "POST":
+            sec1 = request.POST['sec1']
+            sec2 = request.POST['sec2']
+            if sec1 != sec2:
+                messages.error(request, "Password didn't match")
+                return redirect('server-manage')
+            server = Server(server_id=server_id, secret_key = sec1)
+            server.save()
+            messages.success(request, 'Password changed successfully')
+            return redirect('server-manage')
+    return redirect('server-create')
+
 def create_server(request):
     form = ServerForm()
     context = {'form':form}
@@ -117,11 +132,16 @@ def create_server(request):
                 pass_val = False
 
             if server_val and pass_val:
-                server_db = Server(server_id=server_id, secret_key = secret_key)
-                server_db.save()
-                request.session[serverID] = server_id
-                request.session.set_expiry(session_expiry)  ## session is expiring here.
-                return redirect("server-manage")
+                
+                server_check = Server.objects.filter(server_id=server_id)
+                if not server_check:
+                    server_db = Server(server_id=server_id, secret_key = secret_key)
+                    server_db.save()
+                    request.session[serverID] = server_id
+                    request.session.set_expiry(session_expiry)  ## session is expiring here.
+                    return redirect("server-manage")
+                else:
+                    context['duplicate_server_error'] = True
             else:
                 context['form'] = form
     return render(request, 'server/create.html', context=context)

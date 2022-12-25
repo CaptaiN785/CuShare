@@ -3,8 +3,14 @@
 {% block title %}Manage server{% endblock title %}
 
 {% block content %}
-<section id="manage-home">
-
+<section id="manage-home" >
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
 <div class="manage-container">
 
     <div class="upload-bar">
@@ -44,7 +50,6 @@
             </tbody>
         </table>
     </div>
-
     <div class="modal">
         <div class="modal-header">
             <span>
@@ -54,10 +59,45 @@
             <button class="modal-btn" onclick="closeModel()">X</button>
         </div>
         <div class="modal-body">
-            
         </div>
     </div>
-
+</div>
+<button class="change-password" onclick="showInput()" > &oplus; </button>
+<div id = "pass-form" >
+    <div class="form">
+        <h2>Change secret key</h2><hr>
+        <form action="{% url 'changepassword' %}" autocomplete="off" method="post">
+            {% csrf_token %}
+            <div class="input-wrapper">
+                <div class="input-row">
+                    <p class="input-label">Enter secret key</p>
+                    <p><input type="password" name="sec1" id="sec1"></p>
+                </div>
+                <div class="input-row">
+                    <p class="input-label">Confirm secret key</p>
+                    <p><input type="password" name="sec2" id="sec2"></p>
+                </div>
+                <div class="input-row">
+                    <p><button type="submit">Change</button></p>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 </section>
+
+<script>
+
+    var passForm = document.getElementById("pass-form");
+    function showInput(){
+        if(passForm.style.display == "block"){
+            passForm.style.display = "none";
+        }else{
+            passForm.style.display = "block";
+        }
+    }
+
+
+</script>
+
 {% endblock content %}

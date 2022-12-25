@@ -11,4 +11,5 @@ urlpatterns = [
     path('code/<str:code_id>', views.code, name="server-code"),
     path('codelist/<server_id>', views.code_list, name='server-code-list'),
     path('deleteserver', views.delete_server, name='delete-server'),
+    path('changepassword', views.change_password, name='changepassword'),
 ]
