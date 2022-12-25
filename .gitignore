@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 .vscode/*
 secret_key.txt
+staticfiles/*
 
 # C extensions
 *.so
