@@ -7,7 +7,13 @@
 {% block content %}
 
 <section id = "server-home">
-
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
     <div class="heading">
         <h1>Welcome to code sharing server</h1>
     </div>
@@ -23,13 +29,6 @@
                     <p>Enter your server ID</p>
                     <input type="search" name="server_id" id="server_id"
                     maxlength="10" placeholder="server id eg. caP785">
-                    {% if messages %}
-                        {% for message in messages %}
-                        {% if message.tags == "warning"%}
-                            <div class="error"><p>* {{ message }}</p></div>
-                        {% endif %}
-                        {% endfor %}
-                    {% endif %}
                     <button type="submit">Search</button>
                 </div>
             </form>
@@ -45,13 +44,6 @@
                     <p>Enter your Code ID</p>
                     <input type="search" name="code_id" id="code_id" minlength="6" maxlength="6"
                     placeholder="6-digit code id eg. CAPSEF" style="text-transform: uppercase;">
-                    {% if messages %}
-                        {% for message in messages %}
-                        {% if message.tags == "error" %}
-                        <div class="error"><p>* {{ message }}</p></div>
-                        {% endif %}
-                        {% endfor %}
-                    {% endif %}
                     <button type="submit">Search</button>
                 </div>
 

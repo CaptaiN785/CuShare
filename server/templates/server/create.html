@@ -32,7 +32,7 @@
                     <div class="error"><p>* Password didn't match</p></div>
                 {% endif %}
                 {% if duplicate_server_error %}
-                    <div class="error"><p>* Server already exist</p></div>
+                    <div class="input-error"><p>* Server already exist</p></div>
                 {% endif %}
                 <div class="input-row">
                     <p><button type="submit">Register</button></p>
@@ -55,7 +55,7 @@
             </div>
             {% if messages %}
                 {% for message in messages %}
-                <p class="error">* {{ message }}</p>
+                <p class="input-error">* {{ message }}</p>
                 {% endfor %}
             {% endif %}
             <div class="input-row">

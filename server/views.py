@@ -6,11 +6,12 @@ from .forms import ServerForm
 from .models import Server, Code
 import string
 import random
+from .import firebase
 
 ## Server id key
 serverID = 'LoginServerID'
 ## On changing this variable:
-# Also change in: 1. core/base.html, 2. server/base.html
+# Also change in: 1. core/base.html, 2. server/base.html, 3. manage_server.html
 
 ## Time in second for expiery of session
 session_expiry = 14400
@@ -26,8 +27,6 @@ def home(request):
             return redirect('server-code-list', server_id)
     return render(request, 'server/index.html')
 
-
-
 def login(request):
     if request.method == "POST":
         server_id = request.POST['server_id']
@@ -38,7 +37,7 @@ def login(request):
                 messages.error(request, "Invalid server id")
                 return redirect('server-create')
 
-        server_detail = Server.objects.filter(server_id=server_id, secret_key=secret_key)
+        server_detail = firebase.check_login(server_id, secret_key)
         if not server_detail:
             messages.error(request ,"Incorrect server id or secret key")
             return redirect('server-create')
@@ -53,14 +52,21 @@ def manage_server(request):
         server_id = request.session.get(serverID)
     else:
         return redirect('server-create')
-    data = Code.objects.filter(server_id=server_id)
+    data = firebase.get_server_code(server_id)
     context['data'] = data
     return render(request, 'server/manage_server.html', context=context)
 
 def delete(request, id):
-    code = Code(pk=id)
-    code.delete()
-    return redirect('server-manage')
+    if request.session.get(serverID, False):
+        server_id = request.session.get(serverID)
+        res = firebase.delete_file(server_id, id)
+        if res:
+            messages.success(request, "Code deleted successfully")
+            return redirect('server-manage')
+        else:
+            messages.error(request, "Unauthorized code ID")
+            return redirect('server-manage')
+    return redirect('server')
 
 def upload(request):
     context = {'isError':False}
@@ -81,9 +87,8 @@ def upload(request):
                     context['isError'] = True
                     context['message'] = "Very less code."
                     return render(request, 'server/upload.html', context)
-
-                code = Code(server_id=server_id, title=title, code_id=code_id, code=code)
-                code.save()
+                firebase.upload_code(server_id, code_id, title, code)
+                messages.success(request, "Code uploaded successfully")
                 return redirect('server-manage')
         else:
             context['isError'] = True
@@ -91,7 +96,7 @@ def upload(request):
     except Exception as e:
         context['isError'] = True
         context['message'] = "Unable to upload the file."
-
+        print(e)
     return render(request, 'server/upload.html', context)
 
 def change_password(request):
@@ -103,8 +108,7 @@ def change_password(request):
             if sec1 != sec2:
                 messages.error(request, "Password didn't match")
                 return redirect('server-manage')
-            server = Server(server_id=server_id, secret_key = sec1)
-            server.save()
+            firebase.change_password(server_id=server_id, secret_key=sec1)
             messages.success(request, 'Password changed successfully')
             return redirect('server-manage')
     return redirect('server-create')
@@ -133,10 +137,9 @@ def create_server(request):
 
             if server_val and pass_val:
                 
-                server_check = Server.objects.filter(server_id=server_id)
+                server_check = firebase.check_server(server_id)
                 if not server_check:
-                    server_db = Server(server_id=server_id, secret_key = secret_key)
-                    server_db.save()
+                    firebase.create_server(server_id=server_id, secret_key=secret_key)
                     request.session[serverID] = server_id
                     request.session.set_expiry(session_expiry)  ## session is expiring here.
                     return redirect("server-manage")
@@ -153,7 +156,7 @@ def code(request, code_id):
         messages.error(request, "Invalid code ID")
         return redirect('server')
 
-    code = Code.objects.filter(code_id = code_id)
+    code = firebase.get_code(code_id)
     if not code:
         messages.error(request, "Code not found")
         return redirect('server')
@@ -162,37 +165,38 @@ def code(request, code_id):
 
 def code_list(request, server_id):
     if not str(server_id).isalnum():
-        messages.warning(request, "Invalid server id")
+        messages.error(request, "Invalid server id")
         return redirect("server")
     
-    server = Server.objects.filter(server_id=server_id)
-    if not server:
-        messages.warning(request, "Server not found")
+    codes = firebase.get_server_code(server_id=server_id)
+    if not codes:
+        messages.error(request, "Server not found")
         return redirect("server")
-
-    codes = Code.objects.filter(server_id=server_id)
+    
     return render(request, 'server/codelist.html',{'data':codes})
 
 def delete_server(request):
     if request.session.get(serverID, False):
         server_id = request.session.get(serverID)
-        server = Server.objects.filter(server_id=server_id)
-        codes = Code.objects.filter(server_id=server_id)
-        server.delete()
-        codes.delete()
-        request.session.clear()
-        return redirect('server')
+        res = firebase.delete_server(server_id)
+        if res:
+            messages.success(request, "Server deleted successfully")
+            return redirect('server')
+        else:
+            messages.error(request, "Unable to delete server")
+            return redirect('server-manage')
     return redirect('server-create')
 
 ### helper function
 def generate_code_id():
+    codeID = firebase.get_all_codeID()
     letters = string.ascii_uppercase
 
     key = ""
     for i in range(6):
         key += random.choice(letters)
 
-    while Code.objects.filter(code_id = key):
+    while key in codeID:
         key = ""
         for i in range(6):
             key += random.choice(letters)
