@@ -180,6 +180,7 @@ def delete_server(request):
         server_id = request.session.get(serverID)
         res = firebase.delete_server(server_id)
         if res:
+            request.session.clear() ## Clearing the all session variable
             messages.success(request, "Server deleted successfully")
             return redirect('server')
         else:
