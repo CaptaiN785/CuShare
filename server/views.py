@@ -47,13 +47,13 @@ def login(request):
     return redirect('server-create')
 
 def manage_server(request):
-    context={}
+    context={'data':None}
     if request.session.get(serverID, False):
         server_id = request.session.get(serverID)
+        data = firebase.get_server_code(server_id)
+        context['data'] = data
     else:
         return redirect('server-create')
-    data = firebase.get_server_code(server_id)
-    context['data'] = data
     return render(request, 'server/manage_server.html', context=context)
 
 def delete(request, id):
