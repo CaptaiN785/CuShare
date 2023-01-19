@@ -6,7 +6,7 @@ __pycache__/
 secret_key.txt
 staticfiles/
 key.json
-
+media
 # C extensions
 *.so
 
