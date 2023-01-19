@@ -418,6 +418,12 @@ hr{
     border: 1px solid var(--primary-color);
     box-shadow: 0 0 10px var(--primary-color);
 }
+#uploaded_files{
+    padding:1rem;
+    background: var(--light-secondary-color);
+    width: 100%;
+    color:var(--complementary-color);
+}
 .upload-error{
     text-align: center;
     background:var(--complementary-color);
