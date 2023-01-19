@@ -1,21 +1,25 @@
 
 import firebase_admin
-from firebase_admin import credentials
+from firebase_admin import credentials, storage
 from firebase_admin import db
+from datetime import datetime
 
 # from django.conf import settings
 # import os
 # key_location = os.path.join(settings.BASE_DIR, 'key.json')
 
-key_location = "/etc/secrets/key.json"
+# key_location = "/etc/secrets/key.json"
+key_location = "key.json"
 cred = credentials.Certificate(key_location)
 firebase_admin.initialize_app(cred, {
-    "databaseURL":"https://cushare-785-default-rtdb.firebaseio.com"
+    "databaseURL":"https://cushare-785-default-rtdb.firebaseio.com",
+    "storageBucket":"cushare-785.appspot.com" ## File storage path
 })
 
 codes = db.reference("/CODE/")
 code_path = db.reference("CODEPATH")
 server = db.reference("/SERVER/")
+bucket = storage.bucket() ## root directory of storage bucket.
 
 ## Upload the code
 def upload_code(server_id, code_id, title, code):
@@ -29,6 +33,13 @@ def upload_code(server_id, code_id, title, code):
     new_path = code_path.child(code_id)
     new_path.set({"path":path})
     print("Uploaded record [{}]".format(path))
+
+def upload_file(server_id, title, local_file_url, filename):
+    server_file_path = server_id +"/"+str(datetime.now()) + " " + title + "/" + filename
+    blob = bucket.blob(server_file_path)
+    blob.upload_from_filename(local_file_url)
+    blob.make_public()
+    print("Uploaded({}): ".format(server_id) + str(blob.public_url))
 
 def delete_file(server_id, code_id):
     path = server_id + "/" + code_id

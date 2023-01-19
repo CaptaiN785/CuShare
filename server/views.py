@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib import messages
+from django.conf import settings
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile, File
 
 from .forms import ServerForm
 from .models import Server, Code
@@ -96,6 +99,35 @@ def upload(request):
     except Exception as e:
         context['isError'] = True
         context['message'] = "Unable to upload the file."
+        print(e)
+    return render(request, 'server/upload.html', context)
+
+def upload_file(request):
+    context = {'isError':False}
+    try:
+        if request.session.get(serverID, False):
+            server_id = request.session.get(serverID)
+            if request.method == "POST":
+                title = request.POST['file_title']
+                code_id = generate_code_id()
+                if request.FILES:
+                    file = request.FILES['my_file']
+                    filename = default_storage.save(file.name, file)
+                    file_url = default_storage.path(filename)
+                    
+                    firebase.upload_file(server_id, title,file_url, filename)
+                    ## upload here file
+                    messages.success(request, "File uploaded successfully")
+                    return redirect('server-manage')
+                else:
+                    context['isError'] = True
+                    context['message'] = "No file is selected"
+        else:
+            context['isError'] = True
+            context['message'] = "Please login first"
+    except Exception as e:
+        context['isError'] = True
+        context['message'] = "Unable to upload file"
         print(e)
     return render(request, 'server/upload.html', context)
 

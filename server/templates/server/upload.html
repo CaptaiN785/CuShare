@@ -9,7 +9,7 @@
             <h2 class="upload-error">{{message}} </h2>
         {% endif %}
         <div class="form">
-            <h2>Upload your code here</h2><hr>
+            <h2>Upload your <em class="invert">Code</em> here</h2><hr>
             <form action="{% url 'server-upload' %}"  method="post" enctype="multipart/form-data">
                 
                 {% csrf_token %}
@@ -42,7 +42,29 @@
             </form>
         </div>            
     </div>
-    
+    <div class="form-wrapper" id="file-upload-section">
+        <div class="form">
+            <h2>Upload your <em class="invert">Files</em> here.</h2>
+            <form action="{% url 'server-file-upload' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="input-row">
+                    <p class="input-label">Enter file name</p>
+                    <p><input type="text" name="file_title" id="file_title" minlength="4" maxlength="60" required></p>
+                </div>
+
+                <div class="input-row" >
+                    <p class="input-label"><label for="#uploaded_files">Select file</label></p>
+                    <p><input type="file" name="my_file" id="uploaded_files" required ></p>
+                </div>
+                
+                <div class="input-row">
+                    <p><button type="submit">Upload file</button></p>
+                </div>
+                
+            </form>
+        </div>
+    </div>
 </section>
 {% endblock content %}
 
