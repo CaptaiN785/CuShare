@@ -75,6 +75,15 @@ def get_server_code(server_id):
     server_code = codes.child(server_id).get()
     return server_code
 
+def get_server_files(server_id):
+    return bucket.list_blobs(prefix=server_id)
+
+def delete_server_files(filepath):
+    blobs = bucket.list_blobs(prefix=filepath)
+    for blob in blobs:
+        print("Deleting: {}".format(blob.name))
+        blob.delete()
+
 def check_login(server_id, secret_key):
     new_server = server.child(server_id).get()
     if not new_server or new_server['secret_key'] != secret_key:
@@ -90,6 +99,10 @@ def check_server(server_id):
 def delete_server(server_id):
     ## Delete all the code.
     try:
+        print("Deleting Server: {}".format(server_id))
+        ## Deleting files
+        delete_server_files(server_id)
+        ## Deleting codes
         all_codes = codes.child(server_id)
         for key in all_codes.get().keys():
             path = code_path.child(key)

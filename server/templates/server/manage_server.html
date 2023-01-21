@@ -22,8 +22,14 @@
         <a href="{% url 'server-upload' %}" class="upload-btn">+  Upload</a>
     </div>
     <hr>
-    <div class="data-table">
-        
+    <div class="panel-bar">
+        <input type="radio" name="__xyz" id="file-btn" checked onclick="selectTable()">
+        <label for="file-btn">Files</label>
+        <input type="radio" name="__xyz" id="code-btn" onclick="selectTable()">
+        <label for="code-btn">Codes</label>
+    </div>
+    <div class="data-table" id="code-view">
+        <h2>Codes</h2>
         <table>
             <thead>
                 <tr>
@@ -53,6 +59,37 @@
             </tbody>
         </table>
     </div>
+
+    <div class="data-table" id="file-view">
+        <h2>Files</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Option</th>
+                    <th>Link</th>
+                    <th>Download</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                <tr>
+                    <td>{{ file.title }}</td>
+                    <td>
+                        <a href="{% url 'server-delete-file' file.folder %}" class="delete-link"
+                        onclick="return ask()">Delete</a>
+                    </td>
+                    <td class="copy-btn"><button type="button" onclick="copyUrl(this)" 
+                        value="{{file.url}}" >&#9741; copy</button></td>
+                    <td> <a href="{{ file.url }}" class="view-btn" target="_blank" style="text-decoration:none;">Download</a> </td>
+                </tr>
+                {% empty%}
+                <tr><td colspan='4'>No file found</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
     <div class="modal">
         <div class="modal-header">
             <span>

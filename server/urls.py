@@ -13,5 +13,5 @@ urlpatterns = [
     path('deleteserver', views.delete_server, name='delete-server'),
     path('changepassword', views.change_password, name='changepassword'),
     path('uploadfile', views.upload_file, name='server-file-upload'),
-    
+    path('deletefile/<folder>', views.delete_file, name='server-delete-file'),
 ]

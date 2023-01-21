@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.urls import reverse
 from django.contrib import messages
 from django.conf import settings
@@ -55,6 +55,19 @@ def manage_server(request):
         server_id = request.session.get(serverID)
         data = firebase.get_server_code(server_id)
         context['data'] = data
+
+        ## Processing the files
+        files = firebase.get_server_files(server_id)
+        managed_files = []
+        for file in files:
+            folder_name = file.name.split('/')[1]
+            file_title = folder_name[27:]
+            managed_files.append({
+                'title':file_title,
+                'folder':folder_name,
+                'url':file.public_url
+                })
+        context['files'] = managed_files
     else:
         return redirect('server-create')
     return render(request, 'server/manage_server.html', context=context)
@@ -70,6 +83,18 @@ def delete(request, id):
             messages.error(request, "Unauthorized code ID")
             return redirect('server-manage')
     return redirect('server')
+
+def delete_file(request, folder):
+    if request.session.get(serverID, False):
+        server_id = request.session.get(serverID)
+        filepath = server_id + "/"+folder
+        try:
+            firebase.delete_server_files(filepath)
+            messages.success(request, "File deleted successfully")
+        except:
+            messages.error(request, "Unable to delete file")
+        return redirect('server-manage')
+    return redirect('server-create')
 
 def upload(request):
     context = {'isError':False}
@@ -204,8 +229,21 @@ def code_list(request, server_id):
     if not codes:
         messages.error(request, "Server not found")
         return redirect("server")
-    
-    return render(request, 'server/codelist.html',{'data':codes})
+
+    ## Processing the files
+    files = firebase.get_server_files(server_id)
+    managed_files = []
+    for file in files:
+        folder_name = file.name.split('/')[1]
+        file_title = folder_name[27:]
+        managed_files.append({
+            'title':file_title,
+            'folder':folder_name,
+            'url':file.public_url
+            })
+
+    return render(request, 'server/codelist.html',
+        {'data':codes, 'files':managed_files,'serverID':server_id})
 
 def delete_server(request):
     if request.session.get(serverID, False):

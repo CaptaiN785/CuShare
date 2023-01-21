@@ -10,8 +10,9 @@
 <li class="nav-item"><a href="{% url 'server' %}">Home</a></li>
 {% if not request.session.LoginServerID %}
 <li class="nav-item"><a href="{% url 'server-create' %}">Create/Login</a></li>
-{% endif %} 
+{% else %}
 <li class="nav-item"><a href="{% url 'server-manage' %}">Manage</a></li>
+{% endif %} 
 {% endblock navbar %}
 
 
