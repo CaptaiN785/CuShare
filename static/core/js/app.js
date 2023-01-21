@@ -17,4 +17,10 @@ navBtn.addEventListener("click", function(){
         document.querySelector(".nav-list").style.display = "none";
         navBtn.innerText = "=";
     }
-})
+});
+
+var devBtn = document.getElementById("dev-btn");
+devBtn.addEventListener("click", function(){
+    // open all link
+    window.open("https://github.com/captain785");
+});

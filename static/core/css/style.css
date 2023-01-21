@@ -16,6 +16,7 @@ body::-webkit-scrollbar-thumb{
     background: var(--primary-color);
 }
 #navbar{
+    position: relative;
     padding:0.5rem 2rem;
     background:var(--complementary-color);
     display: flex;
@@ -108,7 +109,19 @@ body::-webkit-scrollbar-thumb{
     background:var(--primary-color);
     color:var(--complementary-color);
 }
-
+#dev-btn{
+    position: absolute;
+    left:50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    background: none;
+    border:none;
+    outline:none;
+    font-size: 1.5rem;
+    color:var(--primary-color);
+    cursor:alias;
+    margin-top:-2px;
+}
 
 @media screen and (max-width:600px) {
     #navbar{

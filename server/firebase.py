@@ -8,8 +8,7 @@ from datetime import datetime
 # import os
 # key_location = os.path.join(settings.BASE_DIR, 'key.json')
 
-# key_location = "/etc/secrets/key.json"
-key_location = "key.json"
+key_location = "/etc/secrets/key.json"
 cred = credentials.Certificate(key_location)
 firebase_admin.initialize_app(cred, {
     "databaseURL":"https://cushare-785-default-rtdb.firebaseio.com",
