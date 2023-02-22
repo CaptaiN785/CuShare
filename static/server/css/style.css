@@ -422,8 +422,13 @@ hr{
         row-gap: 1rem;
         justify-content: center;
     }
+    /* #codelist-home{
+        padding:0;
+    } */
     .manage-container{
-        padding: 1rem 0.4rem;
+        padding:0.4rem;
+        margin:0;
+        width:100%;
     }
     #manage-home{
         padding:1rem 0.4rem;
